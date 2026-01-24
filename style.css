@@ -1,0 +1,178 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+
+body { background-color: #f7f7f7; color: #333; }
+
+.header { padding: 50px 20px; text-align: center; background: white; margin-bottom: 30px; }
+
+.header h1 { font-size: 2.5rem; margin-bottom: 20px; color: #00e1ff; }
+
+.search-container { max-width: 250px; margin: 0 auto; }
+
+#searchBox {
+    width: 100%;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 50px;
+    background: #f1f3f4;
+    font-size: 1rem;
+    transition: all 0.3s;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.295);
+}
+
+/* Container untuk dropdown agar posisi panah benar */
+.dropdown-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 15px;
+}
+
+#filterDropdown {
+    width: 100%;
+    padding: 12px 25px;
+    border: 2px solid transparent;
+    border-radius: 50px;
+    background-color: #f1f3f4;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #444;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    appearance: none; /* Menghapus panah asli browser */
+    -webkit-appearance: none;
+}
+
+/* Panah custom menggunakan SVG agar tajam dan cantik */
+.dropdown-wrapper::after {
+    content: "";
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e1ff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    transition: transform 0.3s ease;
+}
+
+/* Efek saat dropdown diklik */
+#filterDropdown:focus {
+    background-color: #ffffff;
+    border-color: #00e1ff;
+    box-shadow: 0 10px 20px rgba(0, 225, 255, 0.1);
+}
+
+/* Memutar panah saat dropdown terbuka (opsional pada beberapa browser) */
+#filterDropdown:focus + .dropdown-wrapper::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Mempercantik tampilan list pilihan (hanya didukung beberapa browser) */
+#filterDropdown option {
+    background: white;
+    color: #333;
+    padding: 10px;
+}
+
+.container { max-width: auto; margin: 0 auto; padding: 0 20px; }
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 25px; 
+    align-items: start;
+}
+
+.photo-card {
+    position: relative;
+    margin-bottom: 20px;
+    break-inside: avoid;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.photo-card img {
+    width: 100%;
+    display: block;
+    height: auto;
+}
+
+.photo-card:hover { transform: scale(1.02); }
+
+.info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white;
+    padding: 20px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Bagian ini sama persis dengan kode Anda sebelumnya */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+body { background-color: #f7f7f7; color: #333; }
+.header { padding: 50px 20px; text-align: center; background: white; margin-bottom: 30px; }
+.header h1 { font-size: 2.5rem; margin-bottom: 20px; color: #00e1ff; }
+.search-container { max-width: 250px; margin: 0 auto; }
+
+#searchBox {
+    width: 100%;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 50px;
+    background: #f1f3f4;
+    font-size: 1rem;
+    transition: all 0.3s;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* DESAIN DROPDOWN YANG DIPERBAIKI */
+#filterDropdown {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px 20px;
+    border: 1px solid transparent;
+    border-radius: 50px;
+    background-color: #f1f3f4;
+    font-size: 0.95rem;
+    color: #555;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    appearance: none; /* Menghapus panah default browser */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    background-size: 15px;
+}
+
+#filterDropdown:hover {
+    background-color: #e8eaeb;
+}
+
+#filterDropdown:focus {
+    background-color: #fff;
+    border-color: #00e1ff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.photo-card:hover .info { opacity: 1; }
+
+@media (max-width: 922px) {
+    .gallery { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .gallery { grid-template-columns: 1fr; }
+}
