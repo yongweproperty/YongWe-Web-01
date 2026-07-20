@@ -1,0 +1,272 @@
+/* --- Reset Dasar --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #d8faff 100%);
+    background-attachment: fixed;
+    /* Menjaga background tetap diam saat scroll */
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    /* Memastikan background memenuhi setidaknya seluruh tinggi layar */
+    margin: 0;
+}
+
+/* --- Layout Galeri Utama --- */
+.container {
+    display: grid;
+    /* Membuat grid responsif: akan berjejer ke samping, kalau layar sempit akan turun ke bawah */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* --- Styling Kartu (Card) --- */
+.photo-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    /* KUNCI: Mencegah isi dalam kartu meluber keluar */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: auto;
+    max-width: 400px;
+}
+
+/* --- Styling Carousel / Slider Foto --- */
+.slider-wrapper {
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+    /* Tanda bisa diklik */
+    overflow: hidden;
+    /* KUNCI: Menyembunyikan sisa foto yang panjang ke kanan */
+}
+
+.slider-track {
+    display: flex;
+    width: 100%;
+    transition: transform 0.4s ease-in-out;
+    height: auto;
+    /* Efek geser yang mulus */
+}
+
+.slider-track img {
+    width: 100%;
+    flex-shrink: 0;
+    /* KUNCI: Memaksa foto tetap 100% dan tidak menyusut */
+    height: 450px;
+    object-fit: cover;
+    /* Mencegah foto gepeng */
+    display: block;
+}
+
+/* Petunjuk "Klik Foto" di atas gambar */
+.click-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    pointer-events: none;
+    /* Agar tidak menghalangi klik pada gambar */
+}
+
+/* --- Styling Area Teks (Bawah Foto) --- */
+.card-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Jarak rapi antar teks */
+}
+
+.badge-lokasi {
+    font-size: 12px;
+    color: #007bff;
+    background: #e7f1ff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    width: fit-content;
+}
+
+.card-title {
+    font-size: 20px;
+    color: #333;
+}
+
+.card-specs p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.card-price {
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.harga-coret {
+    display: block;
+    font-size: 14px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.harga-promo {
+    display: block;
+    font-size: 22px;
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.harga-promo small {
+    font-size: 14px;
+    font-weight: normal;
+    color: #666;
+}
+
+.pajak-info {
+    font-size: 12px;
+    color: #ffea00;
+    margin-top: 5px;
+}
+
+.header {
+    padding: 50px 20px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.search-container {
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+#searchBox {
+    width: 100%;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 50px;
+    background: #f1f3f4;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#searchBox:focus {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* DESAIN DROPDOWN YANG DIPERBAIKI */
+#filterDropdown {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px 20px;
+    border: 1px solid transparent;
+    border-radius: 50px;
+    background-color: #f1f3f4;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    appearance: none;
+    /* Menghapus panah default browser */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    background-size: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#filterDropdown:focus {
+    background-color: #fff;
+    border-color: #00e1ff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.details {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+    font-family: sans-serif;
+    transition: all 0.3s ease;
+    max-width: 250px;
+}
+
+/* Mengatur tampilan judul yang diklik */
+summary {
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    list-style: none;
+    /* Menghilangkan segitiga bawaan jika ingin diganti */
+    position: relative;
+    padding-left: 20px;
+}
+
+/* Membuat tanda panah kustom */
+summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: transform 0.2s ease;
+    font-size: 0.8em;
+}
+
+/* Mengubah arah panah saat menu terbuka */
+.details[open] summary::before {
+    transform: rotate(90deg);
+}
+
+/* Mengatur tampilan isi deskripsi */
+.details p {
+    margin-top: 10px;
+    color: #555;
+    line-height: 1.6;
+}
+
+@media (max-width: 1500px) {
+    .gallery {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+}
