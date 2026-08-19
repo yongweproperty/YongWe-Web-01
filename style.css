@@ -56,7 +56,6 @@ body {
     display: flex;
     width: 100%;
     transition: transform 0.4s ease-in-out;
-    height: auto;
     /* Efek geser yang mulus */
 }
 
@@ -64,7 +63,7 @@ body {
     width: 100%;
     flex-shrink: 0;
     /* KUNCI: Memaksa foto tetap 100% dan tidak menyusut */
-    height: 100%;
+    height: auto;
     object-fit: cover;
     /* Mencegah foto gepeng */
     display: block;
