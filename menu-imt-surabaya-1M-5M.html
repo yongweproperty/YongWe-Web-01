@@ -28,6 +28,66 @@
     </div>
 
     <div class="gallery">
+        <!-- Bungkus form upload dengan div ini -->
+        <div id="containerFormUpload" style="display: none;">
+            <!-- Form Tambah Properti Kamu Ada Di Sini -->
+            <form id="formTambahProperti">
+
+                <div class="upload-section"
+                    style="background: #f4f4f4; padding: 20px; margin: 20px auto; max-width: 800px; border-radius: 8px;">
+                    <h2>Tambah Properti Baru</h2>
+                    <form id="formTambahProperti" style="display: flex; flex-direction: column; gap: 10px;">
+                        <input type="text" id="inputYoutube"
+                            placeholder="Link Video YouTube (Opsional, contoh: https://youtu.be/xxx)" />
+                        <input type="file" id="inputFoto" multiple accept="image/*">
+
+                        <select id="inputKategori" required>
+                            <option value="" disabled selected>Pilih Kategori...</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Rumah">Rumah</option>
+                            <option value="Gudang">Gudang</option>
+                            <option value="Tanah">Tanah</option>
+                            <option value="Ruko">Ruko</option>
+                            <option value="Pabrik">Pabrik</option>
+                        </select>
+
+                        <input type="text" id="inputJudul" placeholder="Judul (Misal: Ruko Babatan Pantai)" required>
+                        <input type="text" id="inputLokasi" placeholder="Lokasi (Misal: Ruko Babatan Pantai, Mulyorejo)"
+                            required>
+
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="inputLT" placeholder="LT (Misal: 52 m2)" required style="flex: 1;">
+                            <input type="text" id="inputLB" placeholder="LB (Misal: 100 m2)" required style="flex: 1;">
+                        </div>
+
+                        <input type="text" id="inputLantai" placeholder="Jumlah Lantai (Misal: 2 1/2)">
+                        <input type="text" id="inputSurat" placeholder="Surat (Misal: SHM)">
+                        <input type="text" id="inputKT" placeholder="Kamar Tidur (Misal: 0)">
+                        <input type="text" id="inputKM" placeholder="Kamar Mandi (Misal: 1)">
+                        <!-- Input Selling Point Banyak (Gunakan Enter untuk Poin Baru) -->
+                        <textarea id="inputSellingPoint" rows="3"
+                            placeholder="Selling Points (Tekan Enter untuk poin baru, contoh:&#10;Dekat Akses Tol&#10;Bebas Banjir&#10;Full Furnished)">
+                </textarea>
+
+                        <input type="text" id="inputHargaCoret" placeholder="Harga Awal (Misal: 1,496 M)">
+                        <input type="text" id="inputHargaPromo" placeholder="Harga Promo (Misal: Rp 1,2 M)" required>
+                        <!-- Checkbox Opsional Pajak & Biaya -->
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; font-size: 14px; margin-top: 5px; cursor: pointer;">
+                            <input type="checkbox" id="inputPajakInfo" checked>
+                            Tampilkan tulisan "Sudah Termasuk Pajak & Biaya2"
+                        </label>
+
+                        <button type="submit"
+                            style="padding: 10px; background: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer;">Upload
+                            Properti</button>
+                    </form>
+                </div>
+            </form>
+
+        </div>
+        <!-- Form Upload Properti Baru -->
+
         <div class="container" id="gelery">
 
             <div class="photo-card" data-name="Ruko">
@@ -65,50 +125,82 @@
 
             </div>
 
-            <div class="gallery">
-                <div class="container" id="galery">
+            <div class="photo-card" data-name="Ruko">
 
-                    <div class="photo-card" data-name="Ruko">
+                <div class="slider-wrapper" title="Klik untuk melihat foto selanjutnya">
+                    <div class="slider-track">
+                        <!-- Saya ubah ke foto 2 agar sesuai dengan daftar gambar di foldermu -->
+                        <img src="imt-sby-1M-10M (1).jpeg" alt="Tampak Depan">
+                        <img src="imt-sby-1M-10M (5).jpeg" alt="Tampak Depan">
+                        <img src="imt-sby-1M-10M (6).jpeg" alt="Tampak Depan">
+                    </div>
+                    <div class="click-hint">Klik foto 👆</div>
+                </div>
 
-                        <div class="slider-wrapper" title="Klik untuk melihat foto selanjutnya">
-                            <div class="slider-track">
-                                <!-- Saya ubah ke foto 2 agar sesuai dengan daftar gambar di foldermu -->
-                                <img src="imt-sby-1M-10M (1).jpeg" alt="Tampak Depan">
-                                <img src="imt-sby-1M-10M (5).jpeg" alt="Tampak Depan">
-                                <img src="imt-sby-1M-10M (6).jpeg" alt="Tampak Depan">
-                            </div>
-                            <div class="click-hint">Klik foto 👆</div>
-                        </div>
+                <!-- Area Spesifikasi / Teks -->
+                <div class="card-content">
+                    <span class="badge-lokasi">Ruko Megah Raya Ngaglik, Simokerto</span>
+                    <h2 class="card-title">Ruko Megah Raya Ngaglik</h2>
 
-                        <!-- Area Spesifikasi / Teks -->
-                        <div class="card-content">
-                            <span class="badge-lokasi">Ruko Megah Raya Ngaglik, Simokerto</span>
-                            <h2 class="card-title">Ruko Megah Raya Ngaglik</h2>
-
-                            <div class="card-specs">
-                                <p><strong>LT:</strong> 82 m² (5x15)| <strong>LB:</strong> 200 m²</p>
-                                <p><strong>Lantai: 3</strong> | <strong>Surat:</strong> SHM</p>
-                                <p><strong>Kamar Tidur: 0</strong> | <strong>Kamar Mandi: 1</strong></p>
-                                <p>Hadap Raya Ngaglik</p><br>
-                                <p>Segera Hubungi: <br>
-                                    YongWe Property</p>
-                            </div>
-
-                            <div class="card-price">
-                                <span class="harga-coret">2,296 M</span>
-                                <span class="harga-promo">Rp 1,5 M<small> (Harga Investor)</small></span>
-                                <p class="pajak-info">✓ Sudah Termasuk Pajak & Biaya2</p>
-                            </div>
-                        </div>
-
+                    <div class="card-specs">
+                        <p><strong>LT:</strong> 82 m² (5x15)| <strong>LB:</strong> 200 m²</p>
+                        <p><strong>Lantai: 3</strong> | <strong>Surat:</strong> SHM</p>
+                        <p><strong>Kamar Tidur: 0</strong> | <strong>Kamar Mandi: 1</strong></p>
+                        <p>Hadap Raya Ngaglik</p><br>
+                        <p>Segera Hubungi: <br>
+                            YongWe Property</p>
                     </div>
 
+                    <div class="card-price">
+                        <span class="harga-coret">2,296 M</span>
+                        <span class="harga-promo">Rp 1,5 M<small> (Harga Investor)</small></span>
+                        <p class="pajak-info">✓ Sudah Termasuk Pajak & Biaya2</p>
+                    </div>
                 </div>
+
             </div>
 
+        </div>
+    </div>
+
+    <details>
+        <summary></summary>
+        <div id="adminAuthSection"
+            style="margin-top: 80px; padding: 30px; background-color: #f8f9fa; border-top: 2px solid #e0e0e0; text-align: center; border-radius: 8px;">
+            <h3 style="margin-bottom: 15px; color: #333;">Akses Kelola Properti (Admin)</h3>
+
+            <!-- Form Input Password -->
+            <div id="loginFormContainer">
+                <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Masukkan password untuk membuka Akses
+                    Upload &
+                    Hapus Properti:</p>
+                <input type="password" id="inputAdminPassword" placeholder="Masukkan Password Admin"
+                    style="padding: 10px; width: 250px; max-width: 80%; border: 1px solid #ccc; border-radius: 4px; outline: none;">
+                <button id="btnLoginAdmin"
+                    style="padding: 10px 20px; background-color: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px;">Masuk</button>
+                <p id="loginErrorMsg" style="color: #e74c3c; font-size: 13px; margin-top: 8px; display: none;">❌
+                    Password
+                    salah!</p>
+            </div>
+
+            <!-- Status Saat Sudah Logged In -->
+            <div id="loggedInContainer" style="display: none;">
+                <p style="color: #27ae60; font-weight: bold; margin-bottom: 10px;">✅ Anda dalam mode Admin (Dapat Upload
+                    &
+                    Hapus Properti)</p>
+                <button id="btnLogoutAdmin"
+                    style="padding: 8px 16px; background-color: #c0392b; color: white; border: none; border-radius: 4px; cursor: pointer;">Keluar
+                    Mode Admin</button>
+            </div>
+        </div>
+    </details>
+    <!-- Galeri Aset Properti -->
+    <div id="gelery"></div>
+
+    <!-- SECTION ADMIN (Ditaruh di bagian paling bawah) -->
 
 
-            <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
