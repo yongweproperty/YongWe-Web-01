@@ -1,15 +1,39 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // ==========================================
-  // KONFIGURASI PASSWORD ADMIN
-  // ==========================================
-  const ADMIN_PASSWORD = "YongWe82"; // Ganti password di sini sesuai keinginan
+// 1. Import Firebase SDK (Versi ES Module CDN untuk Browser)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { 
+  getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { 
+  getStorage, ref, uploadBytes, getDownloadURL 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
+// 2. Konfigurasi Firebase Milikmu
+const firebaseConfig = {
+  apiKey: "AIzaSyDolXy87n7t6fnMD1JP76K2w8G9HuVbzzY",
+  authDomain: "yongwe-web.firebaseapp.com",
+  projectId: "yongwe-web",
+  storageBucket: "yongwe-web.firebasestorage.app",
+  messagingSenderId: "1061570233619",
+  appId: "1:1061570233619:web:a5b51038020b9031fa06e6",
+  measurementId: "G-JD88CXZ5FZ"
+};
+
+// Inisialisasi Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// Password Admin
+const ADMIN_PASSWORD = "admin123"; // Silakan ubah password ini jika ingin diganti
+
+document.addEventListener("DOMContentLoaded", () => {
+  
   // Helper Cek Status Admin
   function isAdminLoggedIn() {
     return localStorage.getItem('isAdminLoggedIn') === 'true';
   }
 
-  // Fungsi memperbarui Tampilan sesuai Status Admin
+  // Tampilan Mode Admin
   function updateAdminUI() {
     const isLogged = isAdminLoggedIn();
     const containerForm = document.getElementById('containerFormUpload');
@@ -17,21 +41,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const loggedInContainer = document.getElementById('loggedInContainer');
     const deleteButtons = document.querySelectorAll('.btn-delete');
 
-    // Tampilkan / Sembunyikan Form Upload
-    if (containerForm) {
-      containerForm.style.display = isLogged ? 'block' : 'none';
-    }
-
-    // Tampilkan / Sembunyikan Form Login Admin di bawah
+    if (containerForm) containerForm.style.display = isLogged ? 'block' : 'none';
     if (loginContainer && loggedInContainer) {
       loginContainer.style.display = isLogged ? 'none' : 'block';
       loggedInContainer.style.display = isLogged ? 'block' : 'none';
     }
-
-    // Tampilkan / Sembunyikan semua tombol Hapus pada kartu
-    deleteButtons.forEach(btn => {
-      btn.style.display = isLogged ? 'block' : 'none';
-    });
+    deleteButtons.forEach(btn => btn.style.display = isLogged ? 'block' : 'none');
   }
 
   // Handler Login Admin
@@ -46,13 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
         inputPassword.value = '';
         if (errorMsg) errorMsg.style.display = 'none';
         updateAdminUI();
-        alert("Berhasil masuk mode Admin! Form Upload dan fitur Hapus sekarang aktif.");
+        alert("Berhasil masuk mode Admin!");
       } else {
         if (errorMsg) errorMsg.style.display = 'block';
       }
     });
 
-    // Jalankan Login saat menekan tombol Enter
     inputPassword.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') btnLogin.click();
     });
@@ -68,11 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ==========================================
-  // FUNGSI UTAMA KARTU & GALERI PROPERTI
-  // ==========================================
-
-  // 1. Fungsi Carousel Slider
+  // Carousel Slider Foto
   function initCarousel(card) {
     const wrapper = card.querySelector('.slider-wrapper');
     const track = card.querySelector('.slider-track');
@@ -87,14 +97,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.target.classList.contains('btn-delete')) return;
 
       currentIndex++;
-      if (currentIndex >= totalImages) {
-        currentIndex = 0;
-      }
+      if (currentIndex >= totalImages) currentIndex = 0;
       track.style.transform = `translateX(-${currentIndex * 100}%)`;
     });
   }
 
-  // Helper konversi URL YouTube
+  // Helper Embed YouTube
   function getYoutubeEmbedUrl(url) {
     if (!url) return '';
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -104,17 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
       : '';
   }
 
-  // Helper pembaca file foto ke Base64
-  function readFileAsBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // 2. Render Kartu Properti
+  // Render Kartu Properti dari Database
   function renderCard(data, isNew = false) {
     const newCard = document.createElement('div');
     newCard.className = 'photo-card';
@@ -131,10 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (hasImages) {
       const imagesHTML = data.images.map(src => `<img src="${src}" alt="Foto Properti">`).join('');
       topMediaHTML = `
-        <div class="slider-wrapper" title="Klik untuk melihat foto selanjutnya">
-          <div class="slider-track">
-            ${imagesHTML}
-          </div>
+        <div class="slider-wrapper" title="Klik foto untuk slide">
+          <div class="slider-track">${imagesHTML}</div>
           <div class="click-hint">Klik foto 👉</div>
         </div>
       `;
@@ -155,7 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const pajakInfoHTML = data.pajakInfo ? `<p class="pajak-info">Sudah Termasuk Pajak & Biaya2</p>` : '';
 
-    // Multiple Selling Points
     let sellingPointHTML = '';
     if (data.sellingPoint) {
       const points = Array.isArray(data.sellingPoint)
@@ -173,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Pengaturan tombol hapus (Hanya tampil jika Admin Logged In)
     const isLogged = isAdminLoggedIn();
     const deleteBtnStyle = isLogged ? 'block' : 'none';
 
@@ -214,52 +208,55 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    if (hasImages) {
-      initCarousel(newCard);
-    }
+    if (hasImages) initCarousel(newCard);
 
-    // Listener Tombol Hapus
+    // Listener Tombol Hapus Online
     const deleteBtn = newCard.querySelector('.btn-delete');
-    deleteBtn.addEventListener('click', () => {
-      if (confirm(`Yakin ingin menghapus properti "${data.judul}"?`)) {
-        removePropertyFromStorage(data.id);
-        newCard.remove();
+    deleteBtn.addEventListener('click', async () => {
+      if (confirm(`Yakin ingin menghapus properti "${data.judul}" dari database online?`)) {
+        try {
+          await deleteDoc(doc(db, "properties", data.id));
+          newCard.remove();
+          alert("Properti berhasil dihapus!");
+        } catch (err) {
+          console.error("Gagal menghapus:", err);
+          alert("Gagal menghapus dari database online.");
+        }
       }
     });
   }
 
-  // 3. Storage Handling
-  function loadSavedProperties() {
-    const saved = JSON.parse(localStorage.getItem('uploadedProperties') || '[]');
-    saved.forEach(item => renderCard(item, false));
+  // Load Data Properti dari Firebase
+  async function loadOnlineProperties() {
+    try {
+      const q = query(collection(db, "properties"), orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      
+      const galleryContainer = document.getElementById('gelery');
+      if (galleryContainer) galleryContainer.innerHTML = '';
+
+      querySnapshot.forEach((docSnap) => {
+        const item = { id: docSnap.id, ...docSnap.data() };
+        renderCard(item, false);
+      });
+
+      updateAdminUI();
+    } catch (err) {
+      console.error("Gagal memuat data dari Firebase:", err);
+    }
   }
 
-  function savePropertyToStorage(data) {
-    const saved = JSON.parse(localStorage.getItem('uploadedProperties') || '[]');
-    saved.unshift(data);
-    localStorage.setItem('uploadedProperties', JSON.stringify(saved));
-  }
+  loadOnlineProperties();
+  updateAdminUI();
 
-  function removePropertyFromStorage(id) {
-    let saved = JSON.parse(localStorage.getItem('uploadedProperties') || '[]');
-    saved = saved.filter(item => item.id !== id);
-    localStorage.setItem('uploadedProperties', JSON.stringify(saved));
-  }
-
-  // Load Awal
-  const initialCards = document.querySelectorAll('.photo-card');
-  initialCards.forEach(card => initCarousel(card));
-  loadSavedProperties();
-  updateAdminUI(); // Terapkan status visibilitas admin saat halaman dimuat
-
-  // 4. Submit Form
+  // Handler Form Upload Ke Cloud
   const formTambah = document.getElementById('formTambahProperti');
   if (formTambah) {
     formTambah.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       if (!isAdminLoggedIn()) {
-        alert("Akses ditolak! Anda harus masuk sebagai Admin terlebih dahulu di bagian bawah halaman.");
+        alert("Akses ditolak! Silakan masuk sebagai Admin terlebih dahulu.");
         return;
       }
 
@@ -278,41 +275,65 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const base64Images = await Promise.all(fotoFiles.map(readFileAsBase64));
-
-      const propertyData = {
-        id: Date.now().toString(),
-        kategori: document.getElementById('inputKategori').value,
-        judul: document.getElementById('inputJudul').value,
-        lokasi: document.getElementById('inputLokasi').value,
-        lt: document.getElementById('inputLT').value,
-        lb: document.getElementById('inputLB').value,
-        lantai: document.getElementById('inputLantai').value,
-        surat: document.getElementById('inputSurat').value,
-        kt: document.getElementById('inputKT').value,
-        km: document.getElementById('inputKM').value,
-        sellingPoint: sellingPointList,
-        hargaCoret: document.getElementById('inputHargaCoret').value,
-        hargaPromo: document.getElementById('inputHargaPromo').value,
-        pajakInfo: pajakInfoChecked,
-        youtubeUrl: youtubeUrl,
-        images: base64Images
-      };
-
-      savePropertyToStorage(propertyData);
-      renderCard(propertyData, true);
-
-      formTambah.reset();
-      if (document.getElementById('inputPajakInfo')) {
-        document.getElementById('inputPajakInfo').checked = true;
+      const submitBtn = formTambah.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Mengunggah ke Cloud...";
       }
-      
-      filterGallery();
+
+      try {
+        // Upload Foto ke Firebase Storage
+        const imageUrls = [];
+        for (const file of fotoFiles) {
+          const fileRef = ref(storage, `properties/${Date.now()}_${file.name}`);
+          const snapshot = await uploadBytes(fileRef, file);
+          const downloadURL = await getDownloadURL(snapshot.ref);
+          imageUrls.push(downloadURL);
+        }
+
+        const propertyData = {
+          kategori: document.getElementById('inputKategori').value,
+          judul: document.getElementById('inputJudul').value,
+          lokasi: document.getElementById('inputLokasi').value,
+          lt: document.getElementById('inputLT').value,
+          lb: document.getElementById('inputLB').value,
+          lantai: document.getElementById('inputLantai').value,
+          surat: document.getElementById('inputSurat').value,
+          kt: document.getElementById('inputKT').value,
+          km: document.getElementById('inputKM').value,
+          sellingPoint: sellingPointList,
+          hargaCoret: document.getElementById('inputHargaCoret').value,
+          hargaPromo: document.getElementById('inputHargaPromo').value,
+          pajakInfo: pajakInfoChecked,
+          youtubeUrl: youtubeUrl,
+          images: imageUrls,
+          createdAt: Date.now()
+        };
+
+        // Simpan ke Firestore
+        const docRef = await addDoc(collection(db, "properties"), propertyData);
+        
+        renderCard({ id: docRef.id, ...propertyData }, true);
+
+        formTambah.reset();
+        if (document.getElementById('inputPajakInfo')) {
+          document.getElementById('inputPajakInfo').checked = true;
+        }
+        alert("Properti berhasil diunggah ke cloud!");
+      } catch (err) {
+        console.error("Gagal mengunggah:", err);
+        alert("Terjadi kesalahan saat mengunggah aset.");
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Tambah Properti";
+        }
+      }
     });
   }
 });
 
-// 5. Filter & Pencarian
+// Fitur Pencarian & Filter
 const searchBox = document.getElementById('searchBox');
 const filterDropdown = document.getElementById('filterDropdown');
 
