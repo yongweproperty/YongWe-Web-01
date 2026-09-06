@@ -3,9 +3,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { 
   getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { 
-  getStorage, ref, uploadBytes, getDownloadURL 
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 // 2. Konfigurasi Firebase Milikmu
 const firebaseConfig = {
@@ -21,10 +18,29 @@ const firebaseConfig = {
 // Inisialisasi Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app);
+
+// 3. Konfigurasi & Fungsi Upload ImgBB (Gratis & Bebas Error CORS)
+const IMGBB_API_KEY = "43bd746982e37d23170cbf39672237de";
+
+async function uploadKeImgBB(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await response.json();
+  if (data.success) {
+    return data.data.url;
+  } else {
+    throw new Error(data.error?.message || "Gagal mengunggah foto ke ImgBB");
+  }
+}
 
 // Password Admin
-const ADMIN_PASSWORD = "admin123"; // Silakan ubah password ini jika ingin diganti
+const ADMIN_PASSWORD = "admin123";
 
 document.addEventListener("DOMContentLoaded", () => {
   
@@ -212,18 +228,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Listener Tombol Hapus Online
     const deleteBtn = newCard.querySelector('.btn-delete');
-    deleteBtn.addEventListener('click', async () => {
-      if (confirm(`Yakin ingin menghapus properti "${data.judul}" dari database online?`)) {
-        try {
-          await deleteDoc(doc(db, "properties", data.id));
-          newCard.remove();
-          alert("Properti berhasil dihapus!");
-        } catch (err) {
-          console.error("Gagal menghapus:", err);
-          alert("Gagal menghapus dari database online.");
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', async () => {
+        if (confirm(`Yakin ingin menghapus properti "${data.judul}" dari database online?`)) {
+          try {
+            await deleteDoc(doc(db, "properties", data.id));
+            newCard.remove();
+            alert("Properti berhasil dihapus!");
+          } catch (err) {
+            console.error("Gagal menghapus:", err);
+            alert("Gagal menghapus dari database online.");
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   // Load Data Properti dari Firebase
@@ -249,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadOnlineProperties();
   updateAdminUI();
 
-  // Handler Form Upload Ke Cloud
+  // Handler Form Upload Ke Cloud (Menggunakan ImgBB)
   const formTambah = document.getElementById('formTambahProperti');
   if (formTambah) {
     formTambah.addEventListener('submit', async (e) => {
@@ -282,13 +300,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        // Upload Foto ke Firebase Storage
+        // Upload Foto ke ImgBB
         const imageUrls = [];
         for (const file of fotoFiles) {
-          const fileRef = ref(storage, `properties/${Date.now()}_${file.name}`);
-          const snapshot = await uploadBytes(fileRef, file);
-          const downloadURL = await getDownloadURL(snapshot.ref);
-          imageUrls.push(downloadURL);
+          const url = await uploadKeImgBB(file);
+          imageUrls.push(url);
         }
 
         const propertyData = {
@@ -322,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Properti berhasil diunggah ke cloud!");
       } catch (err) {
         console.error("Gagal mengunggah:", err);
-        alert("Terjadi kesalahan saat mengunggah aset.");
+        alert("Terjadi kesalahan saat mengunggah aset: " + err.message);
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
