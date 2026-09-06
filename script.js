@@ -19,8 +19,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 3. Konfigurasi & Fungsi Upload ImgBB (Gratis & Bebas Error CORS)
-const IMGBB_API_KEY = "43bd746982e37d23170cbf39672237de";
+// 3. MASUKKAN API KEY IMGBB MILIKMU DI SINI (Ganti tulisan di dalam tanda kutip)
+const IMGBB_API_KEY = "MASUKKAN_API_KEY_IMGBB_KAMU_DISINI";
 
 async function uploadKeImgBB(file) {
   const formData = new FormData();
@@ -32,10 +32,10 @@ async function uploadKeImgBB(file) {
   });
 
   const data = await response.json();
-  if (data.success) {
+  if (data.success && data.data && data.data.url) {
     return data.data.url;
   } else {
-    throw new Error(data.error?.message || "Gagal mengunggah foto ke ImgBB");
+    throw new Error(data.error?.message || "Gagal mengunggah foto ke ImgBB. Pastikan API Key benar.");
   }
 }
 
@@ -44,12 +44,10 @@ const ADMIN_PASSWORD = "admin123";
 
 document.addEventListener("DOMContentLoaded", () => {
   
-  // Helper Cek Status Admin
   function isAdminLoggedIn() {
     return localStorage.getItem('isAdminLoggedIn') === 'true';
   }
 
-  // Tampilan Mode Admin
   function updateAdminUI() {
     const isLogged = isAdminLoggedIn();
     const containerForm = document.getElementById('containerFormUpload');
@@ -65,7 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteButtons.forEach(btn => btn.style.display = isLogged ? 'block' : 'none');
   }
 
-  // Handler Login Admin
   const btnLogin = document.getElementById('btnLoginAdmin');
   const inputPassword = document.getElementById('inputAdminPassword');
   const errorMsg = document.getElementById('loginErrorMsg');
@@ -88,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Handler Logout Admin
   const btnLogout = document.getElementById('btnLogoutAdmin');
   if (btnLogout) {
     btnLogout.addEventListener('click', () => {
@@ -98,7 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Carousel Slider Foto
   function initCarousel(card) {
     const wrapper = card.querySelector('.slider-wrapper');
     const track = card.querySelector('.slider-track');
@@ -118,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Helper Embed YouTube
   function getYoutubeEmbedUrl(url) {
     if (!url) return '';
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -128,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
       : '';
   }
 
-  // Render Kartu Properti dari Database
   function renderCard(data, isNew = false) {
     const newCard = document.createElement('div');
     newCard.className = 'photo-card';
@@ -226,7 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (hasImages) initCarousel(newCard);
 
-    // Listener Tombol Hapus Online
     const deleteBtn = newCard.querySelector('.btn-delete');
     if (deleteBtn) {
       deleteBtn.addEventListener('click', async () => {
@@ -244,7 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Load Data Properti dari Firebase
   async function loadOnlineProperties() {
     try {
       const q = query(collection(db, "properties"), orderBy("createdAt", "desc"));
@@ -267,7 +258,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadOnlineProperties();
   updateAdminUI();
 
-  // Handler Form Upload Ke Cloud (Menggunakan ImgBB)
   const formTambah = document.getElementById('formTambahProperti');
   if (formTambah) {
     formTambah.addEventListener('submit', async (e) => {
@@ -296,11 +286,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const submitBtn = formTambah.querySelector('button[type="submit"]');
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerText = "Mengunggah ke Cloud...";
+        submitBtn.innerText = "Mengunggah foto...";
       }
 
       try {
-        // Upload Foto ke ImgBB
         const imageUrls = [];
         for (const file of fotoFiles) {
           const url = await uploadKeImgBB(file);
@@ -326,7 +315,6 @@ document.addEventListener("DOMContentLoaded", () => {
           createdAt: Date.now()
         };
 
-        // Simpan ke Firestore
         const docRef = await addDoc(collection(db, "properties"), propertyData);
         
         renderCard({ id: docRef.id, ...propertyData }, true);
@@ -335,10 +323,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (document.getElementById('inputPajakInfo')) {
           document.getElementById('inputPajakInfo').checked = true;
         }
-        alert("Properti berhasil diunggah ke cloud!");
+        alert("Properti berhasil diunggah!");
       } catch (err) {
         console.error("Gagal mengunggah:", err);
-        alert("Terjadi kesalahan saat mengunggah aset: " + err.message);
+        alert("Gagal mengunggah foto: " + err.message);
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -349,7 +337,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Fitur Pencarian & Filter
 const searchBox = document.getElementById('searchBox');
 const filterDropdown = document.getElementById('filterDropdown');
 
